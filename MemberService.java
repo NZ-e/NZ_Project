@@ -16,7 +16,6 @@ public class MemberService {
 		boolean bool = true;
 
 		while(bool) {
-			
 			System.out.println("[[[회원가입 화면입니다.]]]");
 			System.out.print("-아이디 : ");
 			String mid = Main.scanner.nextLine();
@@ -109,12 +108,14 @@ public class MemberService {
 			case "1":
 				if(loginList == null || loginList.isEmpty()) {
 					System.out.println("존재하지 않는 아이디 혹은 비밀번호 입니다.");
-				 continue;
+					System.out.println();
+					continue;
 				}
 				
-				//로그인 일시 기록하는 함수호출 그 함수가
+				//로그인 일시 기록하는 함수호출
+				mDB.mlogin(loginList.get(0));
 				
-				//로그인이 유저와 관리자를 구문해서 다른 화면을 띄움
+				//로그인이 유저와 관리자를 구분해서 다른 화면을 띄움
 				if (mid.equals("admin")) {
 					adminView(loginList);
 				}else {
@@ -138,10 +139,56 @@ public class MemberService {
 
 	public void searchId() {
 		//id 찾기 화면
+		System.out.println("[[[아이디 찾기]]]");
+		System.out.print(">>>이름을 입력해주세요: ");
+		String mname = Main.scanner.nextLine();
+		System.out.print(">>>전화번호를 입력해주세요: ");
+		String mhp = Main.scanner.nextLine();
+		System.out.println();
+		
+		members = new Members();
+		members.setMname(mname);
+		members.setMhp(mhp);
+		List<Members> loginList = mDB.mSelectMembers(members);
+		
+		if(loginList == null || loginList.isEmpty()) {
+			System.out.println("일치하는 정보가 없습니다. 다시 입력해주세요.");
+			System.out.println();
+		
+		}else {
+			System.out.println(loginList.get(0).getMname() + "님의 아이디는"
+					+ loginList.get(0).getMid() + "입니다.");
+			System.out.println();
+		}
+		
 	}
 
 	public void resetPw() {
 		//비밀번호 초기화 화면
+		System.out.println("[[[비밀번호 초기화]]]");
+		System.out.print(">>>아이디를 입력해주세요: ");
+		String mid = Main.scanner.nextLine();
+		System.out.print(">>>이름을 입력해주세요: ");
+		String mname = Main.scanner.nextLine();
+		System.out.println();
+		
+		members = new Members();
+		members.setMid(mid);
+		members.setMname(mname);
+		List<Members> mResetList = mDB.mResetPw(members);
+		
+		if(mResetList != null && !mResetList.isEmpty()) {
+			System.out.println(">>>" + mResetList.get(0).getMid() + "님, 비밀번호 초기화가 완료되었습니다. 비밀번호는 0000입니다.");
+			System.out.println();
+			
+		}else {
+			System.out.println("일치하는 정보가 없습니다. 다시 입력해주세요.");
+			System.out.println();
+		}
+		
+		
+		
+		
 	}
 	
 	public void infoModify(List<Members> loginList) {
@@ -156,9 +203,9 @@ public class MemberService {
 			String mhp = Main.scanner.nextLine();
 			System.out.print("-주소(ex.서울) : ");
 			String maddr = Main.scanner.nextLine();
-			System.out.println();
 			
 			System.out.println("수정이 완료되었습니다.");
+			System.out.println();
 			
 			members.setMname(mname);
 			members.setMhp(mhp);
@@ -185,8 +232,9 @@ public class MemberService {
 
 			switch (cmd) {
 			case "1":
-				System.out.println("[[[1. 나의 정보 확인]]]");
-				System.out.println("| 아이디 | 이름 |     전화번호     |  주소  |성별");
+				System.out.println("[[[나의 정보 확인]]]");
+				System.out.println("번호  아이디   이름       전화번호        주소   성별");
+//				System.out.println(" 아이디   이름       전화번호        주소   성별");
 				loginList.get(0).mprint();
 				
 				System.out.println();
@@ -213,6 +261,8 @@ public class MemberService {
 					System.out.println("회원 탈퇴가 완료되었습니다.");
 					break;
 				case "3":
+					//로그아웃 일시 기록 함수 호출
+					mDB.mlogout(loginList.get(0));
 					//이전화면으로 가기(OOO님 반갑습니다! 화면)
 					continue;
 				}
@@ -220,16 +270,14 @@ public class MemberService {
 				bool = false;
 				break;
 
-			case "2":
-				System.out.println("[[[게시물 목록]]]");
-				System.out.println("게시물 목록 함수 호출해야함.");
-				
+			case "2":			
 				BoardService bs = new BoardService();
-				bs.list();
+				bs.list(loginList.get(0));
 				continue;
 
 			case "3":
 				//로그아웃시 로그아웃 시간을 찍고 while문을 종료하고 main 화면으로 돌아감
+				mDB.mlogout(loginList.get(0));
 				System.out.println("로그아웃 완료. 메인화면으로 돌아갑니다.");
 				bool = false;
 				break;
@@ -261,7 +309,8 @@ public class MemberService {
 			switch (cmd) {
 			case "1":
 				System.out.println("[[[나의 정보 확인]]]");
-				System.out.println("| 아이디 | 이름 |     전화번호     |  주소  |성별");
+				System.out.println("번호  아이디   이름       전화번호        주소   성별");
+//				System.out.println(" 아이디   이름       전화번호        주소   성별");
 				loginList.get(0).mprint();
 	
 				System.out.println();
@@ -273,8 +322,7 @@ public class MemberService {
 				
 				switch (cmd) {
 				case "1":
-					System.out.println("updata 함수호출");
-					System.out.println();
+					infoModify(loginList);
 					continue;
 
 				case "2":
@@ -285,18 +333,15 @@ public class MemberService {
 				bool = false;
 				break;
 
-			case "2":
-				System.out.println("[[[게시물 목록]]]");
-				System.out.println("게시물 목록 함수 호출해야함.");
-				System.out.println();
-				
+			case "2":			
 				BoardService bs = new BoardService();
-				bs.list();
+				bs.list(loginList.get(0));
 				continue;
 
 			case "3":
 				System.out.println("[[[회원 목록]]]");
-				System.out.println("| 아이디 | 이름 |     전화번호     |  주소  |성별");
+				System.out.println("번호  아이디   이름       전화번호        주소   성별");
+//				System.out.println(" 아이디   이름       전화번호        주소   성별");
 				members = new Members();
 				List<Members> mAllList = mDB.mSelectMembers(members);
 				mAllList.stream().forEach(Members::mprint);
@@ -304,8 +349,11 @@ public class MemberService {
 				break;
 				
 			case "4":
-				//로그아웃시 로그아웃 시간을 찍고 while문을 종료하고 main 화면으로 돌아감
+				//로그아웃시 로그아웃 시간을 찍는 함수 호출
+				mDB.mlogout(loginList.get(0));
+				//while문을 종료하고 main 화면으로 돌아감
 				System.out.println("로그아웃 되었습니다.");
+				System.out.println();
 				bool = false;
 				break;
 				

@@ -40,14 +40,18 @@ public class Main {
 				System.out.println("프로그램 종료");
 				System.exit(0);
 				break;
-			case "1":
+			case "1": //회원 가입
 				ms.signup();
 				break;
-			case "2":
+			case "2": //로그인
 				ms.login();
 				break;
-			case "3":
-
+			case "3": //아이디 찾기
+				ms.searchId();
+				break;
+			case "4": //비밀번호 초기화
+				ms.resetPw();
+				break;
 			}
 		}
 	}

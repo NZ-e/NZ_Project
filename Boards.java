@@ -9,8 +9,10 @@ public class Boards{
 	//날짜와 시간을 특정 형식의 문자열로 변환하거나, 반대로 문자열을 날짜와 시간으로 변환
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-
+	private int no;		//콘솔창에서 보일 번호
 	private int bno;          //게시물 번호
+	private String bid;     //작성자(회원)아이디
+	private String bpw;     //작성자(회원)비밀번호
 	private String bname;     //작성자(회원)이름
 	private String btitle;    //제목
 	private String bcontent;  //내용
@@ -18,12 +20,13 @@ public class Boards{
 	private Date bdate;       //작성일
 
 
-	private Boards(String btitle, String bcontent, Date bdate) {
-		this.btitle = btitle;
-		this.bcontent = bcontent;
-		this.bdate =  new Date();
+
+	public int getNo() {
+		return no;
 	}
-	
+	public void setNo(int no) {
+		this.no = no;
+	}
 	
 	public int getBno() {
 		return bno;
@@ -32,7 +35,21 @@ public class Boards{
 		this.bno = bno;
 	}
 
-
+	public String getBid() {
+		return bid;
+	}
+	
+	public void setBid(String bid) {
+		this.bid = bid;
+	}
+	
+	public String getBpw() {
+		return bpw;
+	}
+	
+	public void setBpw(String bpw) {
+		this.bpw = bpw;
+	}
 	public String getBname() {
 		return bname;
 	}
@@ -74,12 +91,14 @@ public class Boards{
 	}
 
 
+//	System.out.println("  이름       제목              조회수        작성일");
 	public void print() {
-		System.out.printf("%4d|%-27s|$s|%s\n", bno, btitle, bname, sdf.format(bdate));
+		System.out.printf("%-4d|%-6s|%-11s|%-5d|%s\n", no, bname, btitle, bhitcnt, bdate);	
+	
 	}
 
-	public void detailView() {
-		System.out.println("게시물 번호 : " + bno);
+	public void detailPrint() {
+		System.out.println("게시물 번호 : " + no);
 		System.out.println("게시물 제목 : " + btitle);
 		System.out.println("게시물 내용 : " + bcontent);
 		System.out.println("작성일시 : " + sdf.format(bdate));
