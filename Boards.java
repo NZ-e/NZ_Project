@@ -1,6 +1,9 @@
 package miniProj1;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Boards{
@@ -8,6 +11,9 @@ public class Boards{
 	
 	//날짜와 시간을 특정 형식의 문자열로 변환하거나, 반대로 문자열을 날짜와 시간으로 변환
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+	
 
 	private int no;		//콘솔창에서 보일 번호
 	private int bno;          //게시물 번호
@@ -57,15 +63,13 @@ public class Boards{
 		this.bname = bname;
 	}
 
-	
 	public String getBtitle() {
 		return btitle;
 	}
+	
 	public void setBtitle(String btitle) {
 		this.btitle = btitle;
 	}
-
-
 
 	public String getBcontent() {
 		return bcontent;
@@ -73,7 +77,6 @@ public class Boards{
 	public void setBcontent(String bcontent) {
 		this.bcontent = bcontent;
 	}
-
 
 	public int getBhitcnt() {
 		return bhitcnt;
@@ -93,16 +96,26 @@ public class Boards{
 
 //	System.out.println("  이름       제목              조회수        작성일");
 	public void print() {
-		System.out.printf("%-4d|%-6s|%-11s|%-5d|%s\n", no, bname, btitle, bhitcnt, bdate);	
+		//게시물 목록 출력
+		//조회수 포함된 printf
+		String toDay = sdf1.format(System.currentTimeMillis());
+		String dbDay = sdf1.format(bdate);
+		String printDay = toDay.equals(dbDay) ? sdf2.format(bdate) : sdf1.format(bdate);
+		
+		System.out.printf("%-5d|%-8s|%-15s|%-5d|%s\n", bno, bname, btitle, bhitcnt, printDay);
 	
 	}
 
 	public void detailPrint() {
-		System.out.println("게시물 번호 : " + no);
+		//게시물 상세보기 출력
+		System.out.println("게시물 번호 : " + bno);
 		System.out.println("게시물 제목 : " + btitle);
 		System.out.println("게시물 내용 : " + bcontent);
+		System.out.println("조회 수 : " + bhitcnt);
 		System.out.println("작성일시 : " + sdf.format(bdate));
 		System.out.println();
 	}
+  
 
+	
 }

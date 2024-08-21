@@ -112,8 +112,11 @@ public class MemberService {
 					continue;
 				}
 				
-				//로그인 일시 기록하는 함수호출
+				//내 회원 정보에 로그인 일시 기록하는 함수호출
 				mDB.mlogin(loginList.get(0));
+				
+				// 로그인 일시 업데이트 후 재조회(로그인 후 내 회원정보에가면 로그인일시가 기록되어 있음)
+				loginList = mDB.mSelectMembers(members);
 				
 				//로그인이 유저와 관리자를 구분해서 다른 화면을 띄움
 				if (mid.equals("admin")) {
@@ -203,14 +206,29 @@ public class MemberService {
 			String mhp = Main.scanner.nextLine();
 			System.out.print("-주소(ex.서울) : ");
 			String maddr = Main.scanner.nextLine();
-			
-			System.out.println("수정이 완료되었습니다.");
 			System.out.println();
 			
+			//로그인 시 리스트 0번지에 기록된 유저정보를 members에 넣고 회원정보 수정 후 업데이트 함수 호출 
+			members = loginList.get(0);
 			members.setMname(mname);
 			members.setMhp(mhp);
 			members.setMaddr(maddr);
 			mDB.mUpdate(members);
+			
+			loginList.set(0, members);
+			
+			System.out.println("수정이 완료되었습니다.");
+			System.out.println();
+			
+			//수정된 값 리스트에 업데이트 후 내 정보 보기 클릭시 출력
+			//해야되는데 안 됨 위에서 수정한 세개만 수정되어 있고, 나머진 null과 0임
+//			members.getNo();
+//			members.getMname();
+//			members.getMhp();
+//			members.getMaddr();
+//			members.getMsex();
+//			loginList.set(0, members);
+			
 		}
 	}
 
@@ -233,8 +251,7 @@ public class MemberService {
 			switch (cmd) {
 			case "1":
 				System.out.println("[[[나의 정보 확인]]]");
-				System.out.println("번호  아이디   이름       전화번호        주소   성별");
-//				System.out.println(" 아이디   이름       전화번호        주소   성별");
+				System.out.println("아이디      이름       전화번호         주소     성별          로그인일시            로그아웃일시");
 				loginList.get(0).mprint();
 				
 				System.out.println();
@@ -259,6 +276,7 @@ public class MemberService {
 					}
 					System.out.println();
 					System.out.println("회원 탈퇴가 완료되었습니다.");
+					System.out.println();
 					break;
 				case "3":
 					//로그아웃 일시 기록 함수 호출
@@ -309,13 +327,13 @@ public class MemberService {
 			switch (cmd) {
 			case "1":
 				System.out.println("[[[나의 정보 확인]]]");
-				System.out.println("번호  아이디   이름       전화번호        주소   성별");
-//				System.out.println(" 아이디   이름       전화번호        주소   성별");
+				System.out.println("아이디      이름       전화번호         주소     성별          로그인일시            로그아웃일시");
 				loginList.get(0).mprint();
 	
 				System.out.println();
 				System.out.println("1. 회원 정보 수정");
-				System.out.println("2. 이전 화면으로");
+				System.out.println("2. 회원 탈퇴");
+				System.out.println("3. 이전 화면으로");
 				System.out.println();
 				System.out.print(">>>원하시는 번호를 입력해주세요: ");
 				cmd = Main.scanner.nextLine();
@@ -326,6 +344,14 @@ public class MemberService {
 					continue;
 
 				case "2":
+					//관리자인 경우는 회원 탈퇴시 비밀번호 없이 바로 탈퇴
+					mDB.mDelete(loginList.get(0));
+					System.out.println();
+					System.out.println("회원 탈퇴가 완료되었습니다.");
+					System.out.println();
+					break;
+					
+				case "3":
 					//이전화면으로 가기(OOO님 반갑습니다! 화면)
 					continue;
 				}
@@ -340,11 +366,11 @@ public class MemberService {
 
 			case "3":
 				System.out.println("[[[회원 목록]]]");
-				System.out.println("번호  아이디   이름       전화번호        주소   성별");
+				System.out.println("번호  아이디       이름         전화번호        주소   성별");
 //				System.out.println(" 아이디   이름       전화번호        주소   성별");
 				members = new Members();
 				List<Members> mAllList = mDB.mSelectMembers(members);
-				mAllList.stream().forEach(Members::mprint);
+				mAllList.stream().forEach(Members::mAllprint);
 				System.out.println();
 				break;
 				

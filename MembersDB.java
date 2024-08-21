@@ -165,7 +165,6 @@ public class MembersDB {
 		List<Members> mResetList = new ArrayList<>(); 
 		
 		try {
-			
 			String sql =
 					"SELECT mid, mpw, mname, mhp, maddr, msex " +
 					"FROM members_info "; 
@@ -227,13 +226,13 @@ public class MembersDB {
 	
 
 	public List<Members> mSelectMembers(Members members) {
-		//로그인, 내정보 보기, 모든 회원정보 불러오기
+		//회원가입시 아이디 중복체크, 로그인, 내정보 보기, 모든 회원정보 불러오기
 		Connection conn = getConnection();
 		
 		List<Members> mlist = new ArrayList<>(); 
 		try {
 			String sql =
-					"SELECT mno, mid, mpw, mname, mhp, maddr, msex " +
+					"SELECT mno, mid, mpw, mname, mhp, maddr, msex, mlogin, mlogout " +
 					"FROM members_info "; 
 
 			PreparedStatement pstmt = null;
@@ -262,10 +261,10 @@ public class MembersDB {
 			// 개인유저와 관리자를 구분하기 위해 ID와 PW값이 있냐 없냐로 구분
 			}else {
 				sql += "WHERE deleteyn='N' ";
+				sql+= "ORDER BY mno DESC";
 				pstmt = conn.prepareStatement(sql);
 			}
 
-			sql+= "ORDER BY mno DESC";
 			//맞는 조건 검색
 			ResultSet rs = pstmt.executeQuery();
 			int no = 0;
@@ -279,6 +278,8 @@ public class MembersDB {
 				members.setMhp(rs.getString("mhp"));
 				members.setMaddr(rs.getString("maddr"));
 				members.setMsex(rs.getString("msex"));
+				members.setMlogin(rs.getDate("mlogin"));
+				members.setMlogout(rs.getDate("mlogout"));
 				
 				mlist.add(members);
 				

@@ -15,14 +15,12 @@ public class Main {
 
 		BoardService bs = new BoardService();
 		MemberService ms = new MemberService();
-		
-//		샘플로 배열에 10건 등록 
-//		for (int i=0;i<10;i++) {
-//		list.add(new Boards("게시물 제목 " + i, "게시물 내용 " + i));
-//		}
 
 
 		while (true) {
+			System.out.println("-------------------------------");
+			System.out.println("	미니 프로젝트 1차");
+			System.out.println("-------------------------------");
 			System.out.println("[[[메뉴를 선택해주세요.]]]");
 			System.out.println("1. 회원 가입");
 			System.out.println("2. 로그인");
